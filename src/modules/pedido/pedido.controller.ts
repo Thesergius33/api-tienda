@@ -3,14 +3,15 @@ import {
   Get,
   Post,
   Body,
-  Patch,
+  Put,
   Param,
   Delete,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { PedidoService } from './pedido.service';
 import { CreatePedidoDto } from './dto/create-pedido.dto';
 import { UpdatePedidoDto } from './dto/update-pedido.dto';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiParam } from '@nestjs/swagger';
 
 @ApiTags('pedidos')
 @Controller('pedidos')
@@ -31,19 +32,40 @@ export class PedidoController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Obtener pedido por ID' })
-  findOne(@Param('id') id: string) {
-    return this.pedidoService.findOne(+id);
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    description: 'ID del pedido',
+    example: 1,
+  })
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.pedidoService.findOne(id);
   }
 
-  @Patch(':id')
+  @Put(':id')
   @ApiOperation({ summary: 'Actualizar pedido' })
-  update(@Param('id') id: string, @Body() updatePedidoDto: UpdatePedidoDto) {
-    return this.pedidoService.update(+id, updatePedidoDto);
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    description: 'ID del pedido',
+    example: 1,
+  })
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updatePedidoDto: UpdatePedidoDto,
+  ) {
+    return this.pedidoService.update(id, updatePedidoDto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Eliminar pedido' })
-  remove(@Param('id') id: string) {
-    return this.pedidoService.remove(+id);
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    description: 'ID del pedido',
+    example: 1,
+  })
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.pedidoService.remove(id);
   }
 }

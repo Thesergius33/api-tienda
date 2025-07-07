@@ -3,14 +3,21 @@ import {
   Get,
   Post,
   Body,
-  Patch,
+  Put,
   Param,
   Delete,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { UsuarioService } from './usuario.service';
 import { CreateUsuarioDto } from './dto/create-usuario.dto';
 import { UpdateUsuarioDto } from './dto/update-usuario.dto';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import {
+  ApiParam,
+  ApiBody,
+  ApiResponse,
+  ApiOperation,
+  ApiTags,
+} from '@nestjs/swagger';
 
 @ApiTags('usuarios')
 @Controller('usuarios')
@@ -31,19 +38,56 @@ export class UsuarioController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Obtener un usuario por ID' })
-  findOne(@Param('id') id: string) {
-    return this.usuarioService.findOne(+id);
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    description: 'ID del usuario a consultar',
+    example: 1,
+  })
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.usuarioService.findOne(id);
   }
 
-  @Patch(':id')
+  @Put(':id')
   @ApiOperation({ summary: 'Actualizar un usuario por ID' })
-  update(@Param('id') id: string, @Body() updateUsuarioDto: UpdateUsuarioDto) {
-    return this.usuarioService.update(+id, updateUsuarioDto);
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    description: 'ID del usuario a actualizar',
+    example: 4,
+  })
+  @ApiBody({
+    type: UpdateUsuarioDto,
+    description: 'Datos para actualizar el usuario',
+  })
+  @ApiResponse({
+    status: 200,
+    description: 'Usuario actualizado correctamente',
+  })
+  @ApiResponse({
+    status: 400,
+    description: 'ID inválido o datos incorrectos',
+  })
+  @ApiResponse({
+    status: 404,
+    description: 'Usuario no encontrado',
+  })
+  update(
+    @Param('id', ParseIntPipe) id: number,
+    @Body() updateDto: UpdateUsuarioDto,
+  ) {
+    return this.usuarioService.update(id, updateDto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Eliminar un usuario por ID' })
-  remove(@Param('id') id: string) {
-    return this.usuarioService.remove(+id);
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    description: 'ID del usuario a eliminar',
+    example: 2,
+  })
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.usuarioService.remove(id);
   }
 }

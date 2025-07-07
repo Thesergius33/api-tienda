@@ -6,11 +6,12 @@ import {
   Put,
   Param,
   Delete,
+  ParseIntPipe,
 } from '@nestjs/common';
 import { ProductoService } from './producto.service';
 import { CreateProductoDto } from './dto/create-producto.dto';
 import { UpdateProductoDto } from './dto/update-producto.dto';
-import { ApiTags, ApiOperation } from '@nestjs/swagger';
+import { ApiTags, ApiOperation, ApiParam } from '@nestjs/swagger';
 
 @ApiTags('productos')
 @Controller('productos')
@@ -31,22 +32,40 @@ export class ProductoController {
 
   @Get(':id')
   @ApiOperation({ summary: 'Obtener producto por ID' })
-  findOne(@Param('id') id: string) {
-    return this.productoService.findOne(+id);
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    example: 1,
+    description: 'ID del producto',
+  })
+  findOne(@Param('id', ParseIntPipe) id: number) {
+    return this.productoService.findOne(id);
   }
 
   @Put(':id')
   @ApiOperation({ summary: 'Actualizar producto' })
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    example: 1,
+    description: 'ID del producto',
+  })
   update(
-    @Param('id') id: string,
+    @Param('id', ParseIntPipe) id: number,
     @Body() updateProductoDto: UpdateProductoDto,
   ) {
-    return this.productoService.update(+id, updateProductoDto);
+    return this.productoService.update(id, updateProductoDto);
   }
 
   @Delete(':id')
   @ApiOperation({ summary: 'Eliminar producto' })
-  remove(@Param('id') id: string) {
-    return this.productoService.remove(+id);
+  @ApiParam({
+    name: 'id',
+    type: Number,
+    example: 1,
+    description: 'ID del producto',
+  })
+  remove(@Param('id', ParseIntPipe) id: number) {
+    return this.productoService.remove(id);
   }
 }
