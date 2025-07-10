@@ -54,18 +54,6 @@ cd api-taller
 npm install
 ```
 
-3. **Configura el archivo `.env`**
-
-Crea un archivo llamado `.env` en la raíz del proyecto con lo siguiente (ajusta según tus datos):
-
-```env
-DB_HOST=localhost
-DB_PORT=5432
-DB_USERNAME=postgres
-DB_PASSWORD=1234
-DB_NAME=tienda
-```
-
 > 🔐 Asegúrate de que la base de datos `tienda` ya esté creada en PostgreSQL.
 
 ---
